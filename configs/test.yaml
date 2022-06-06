@@ -1,7 +1,7 @@
-checkpoint: /home/alex/workspace/ml-data/cae/model_yt_small_final.state
+checkpoint: /home/vijay/Documents/devmk4/cae/src/model_yt_small_final.state
 exp_name: testing
 batch_every: 100
 shuffle: false
-dataset_path: /home/alex/workspace/ml-data/cae/datasets/testing
+dataset_path: /home/vijay/Documents/devmk4/cae/yt_small_720p
 num_workers: 1
 device: cuda

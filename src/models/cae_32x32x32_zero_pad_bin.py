@@ -10,10 +10,11 @@ class CAE(nn.Module):
     Latent representation: 32x32x32 bits per patch => 240KB per image (for 720p)
     """
 
-    def __init__(self):
+    def __init__(self, cfg):
         super(CAE, self).__init__()
 
         self.encoded = None
+        self.cfg = cfg
 
         # ENCODER
 
@@ -174,9 +175,13 @@ class CAE(nn.Module):
 
         # stochastic binarization
         with torch.no_grad():
-            rand = torch.rand(ec3.shape).cuda()
+            rand = torch.rand(ec3.shape)
+            if self.cfg.device == 'cuda':
+                rand = rand.cuda()
             prob = (1 + ec3) / 2
-            eps = torch.zeros(ec3.shape).cuda()
+            eps = torch.zeros(ec3.shape)
+            if self.cfg.device == 'cuda':
+                eps = eps.cuda()
             eps[rand <= prob] = (1 - ec3)[rand <= prob]
             eps[rand > prob] = (-ec3 - 1)[rand > prob]
 

@@ -30,9 +30,10 @@ def test(cfg: Namespace) -> None:
     cfg.to_file(exp_dir / "test_config.json")
     logger.info(f"[exp dir={exp_dir}]")
 
-    model = CAE()
+    model = CAE(cfg)
     model.load_state_dict(T.load(cfg.checkpoint))
     model.eval()
+    print(cfg.device)
     if cfg.device == "cuda":
         model.cuda()
     logger.info(f"[model={cfg.checkpoint}] on {cfg.device}")
@@ -57,7 +58,9 @@ def test(cfg: Namespace) -> None:
 
         for i in range(6):
             for j in range(10):
-                x = patches[:, :, i, j, :, :].cuda()
+                x = patches[:, :, i, j, :, :]
+                if cfg.device == "cuda":
+                    x.cuda()
                 y = model(x)
                 out[i, j] = y.data
 
