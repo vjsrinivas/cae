@@ -16,7 +16,6 @@ def save_imgs(imgs, to_size, name) -> None:
     # to_size = (C, H, W)
     imgs = imgs.clamp(0, 1)
     imgs = imgs.view(imgs.size(0), *to_size)
-    print(imgs.shape)
     save_image(imgs, name)
 
 def calculate_size_bottleneck(bottleneck):
