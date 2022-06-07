@@ -1,5 +1,7 @@
+import sys
 import torch
 import torch.nn as nn
+import utils
 
 
 class CAE(nn.Module):
@@ -10,11 +12,14 @@ class CAE(nn.Module):
     Latent representation: 32x32x32 bits per patch => 240KB per image (for 720p)
     """
 
-    def __init__(self, cfg):
+    def __init__(self, cfg, check_size=False):
         super(CAE, self).__init__()
 
         self.encoded = None
         self.cfg = cfg
+        self.original_file_size = 0.0
+        self.compressed_file_size = 0.0
+        self.check_size = check_size
 
         # ENCODER
 
@@ -187,6 +192,10 @@ class CAE(nn.Module):
 
         # encoded tensor
         self.encoded = 0.5 * (ec3 + eps + 1)  # (-1|1) -> (0|1)
+        if sys.platform == 'linux' or sys.platform == 'linux2' and self.check_size:
+            o, c = utils.calculate_size_bottleneck(self.encoded)
+            self.compressed_file_size += c
+            self.original_file_size += o
 
         return self.decode(self.encoded)
 

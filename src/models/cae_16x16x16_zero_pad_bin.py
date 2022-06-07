@@ -10,10 +10,14 @@ class CAE(nn.Module):
     Latent representation: 16x16x16 bits per patch => 30KB per image (for 720p)
     """
 
-    def __init__(self):
+    def __init__(self, cfg, check_size=False):
         super(CAE, self).__init__()
 
         self.encoded = None
+        self.cfg = cfg
+        self.original_file_size = 0.0
+        self.compressed_file_size = 0.0
+        self.check_size = check_size
 
         # ENCODER
 
