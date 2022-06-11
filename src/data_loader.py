@@ -6,9 +6,9 @@ import torch as T
 from PIL import Image
 from torch.utils.data import Dataset
 
-def preprocess_single(img):
-    pad_w, pad_h = int(np.ceil(img.shape[1]/128)), int(np.ceil(img.shape[0]/128))
-    leftover_w, leftover_h = ((pad_w*128)-img.shape[1]), ((pad_h*128)-img.shape[0])
+def preprocess_single(img, patch_size):
+    pad_w, pad_h = int(np.ceil(img.shape[1]/patch_size)), int(np.ceil(img.shape[0]/patch_size))
+    leftover_w, leftover_h = ((pad_w*patch_size)-img.shape[1]), ((pad_h*patch_size)-img.shape[0])
     if leftover_w%2 != 0:
         w_1 = leftover_w//2
         w_2 = leftover_w-w_1
@@ -29,9 +29,9 @@ def preprocess_single(img):
     img = np.transpose(img, (2, 0, 1))
     img = T.from_numpy(img).float()
 
-    patches = np.reshape(img, (3, pad_h, 128, pad_w, 128))
+    patches = np.reshape(img, (3, pad_h, patch_size, pad_w, patch_size))
     patches = np.transpose(patches, (0, 1, 3, 2, 4))
-    return img, patches, pad_img_new, (pad_w, pad_h)
+    return img, patches, pad_img_new, (pad_w, pad_h), ((w_1, h_1), (w_2, h_2))
 
 
 class SingleImage(Dataset):

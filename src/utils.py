@@ -5,7 +5,7 @@ import gzip
 import numpy as np
 import os
 
-def save_imgs(imgs, to_size, name) -> None:
+def save_imgs(imgs, to_size, name, img_shape) -> None:
     # x = np.array(x)
     # x = np.transpose(x, (1, 2, 0)) * 255
     # x = x.astype(np.uint8)
