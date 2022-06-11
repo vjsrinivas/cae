@@ -55,6 +55,20 @@ num_workers: 1
 device: cuda
 ```
 
+### Detecting On Single Image/Frame
+Run `detect.py` with the following arguments:
+```
+optional arguments:
+  -h, --help       show this help message and exit
+  --config CONFIG
+  --image IMAGE
+  --size
+  --patch PATCH
+  --resize
+```
+
+For example, this command: `python3 detect.py --config ../configs/test.yaml --image test.jpg --patch 512` will run the `32x32x32` CAE model on `test.jpg` with a patch-size of 512. `--resize` means that the patchsize input will be resized to 128x128. Without `--resize`, the network will grow to fit the input size, which increases the memory usage and limiting speed. The bottleneck feature size will be the same.
+
 **Note**: Currently, smoothing (i.e. linear interpolation in [`smoothing.py`](https://github.com/alexandru-dinu/cae/blob/master/src/smoothing.py#L19)) is used in order to account for the between-patches noisy areas due to padding (this still needs [further investigation](https://github.com/alexandru-dinu/cae/issues/20)).
 
 ## Results

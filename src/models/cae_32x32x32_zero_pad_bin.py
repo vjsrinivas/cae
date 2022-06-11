@@ -192,6 +192,7 @@ class CAE(nn.Module):
 
         # encoded tensor
         self.encoded = 0.5 * (ec3 + eps + 1)  # (-1|1) -> (0|1)
+        print("encoded size:", self.encoded.shape)
         if sys.platform == 'linux' or sys.platform == 'linux2' and self.check_size:
             o, c = utils.calculate_size_bottleneck(self.encoded)
             self.compressed_file_size += c

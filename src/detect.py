@@ -22,7 +22,7 @@ ROOT_EXP_DIR = Path(__file__).resolve().parents[1] / "experiments"
 logger = Logger(__name__, colorize=True)
 
 
-def detect(cfg: Namespace, image, patch_size, show_stats=False) -> None:
+def detect(cfg: Namespace, image, patch_size, show_stats=False, resize=False) -> None:
     assert cfg.checkpoint not in [None, ""]
     assert cfg.device == "cpu" or (cfg.device == "cuda" and torch.cuda.is_available())
 
@@ -52,13 +52,13 @@ def detect(cfg: Namespace, image, patch_size, show_stats=False) -> None:
         for j in range(pad[0]):
             x = patches[:, i, j, :, :]
             x = torch.unsqueeze(x, axis=0)
-            x = nn.functional.interpolate(x, size=(128,128), mode='bilinear')
+            if resize:
+                x = nn.functional.interpolate(x, size=(128,128), mode='bilinear')
             if cfg.device == "cuda":
                 x.cuda()
             y = model(x)
-            print(y.shape)
-            y = nn.functional.interpolate(y, size=(patch_size,patch_size), mode='bilinear')
-            print(y.shape)
+            if resize:
+                y = nn.functional.interpolate(y, size=(patch_size,patch_size), mode='bilinear')
             y = y[0]
             out[i, j] = y.data
     
@@ -107,6 +107,7 @@ if __name__ == "__main__":
     parser.add_argument("--image", type=str, required=True)
     parser.add_argument("--size", action='store_true')
     parser.add_argument("--patch", type=int, default=128)
+    parser.add_argument("--resize", action='store_true')
     args = parser.parse_args()
     
     args.patch += args.patch % 2
